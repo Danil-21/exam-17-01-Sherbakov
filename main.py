@@ -138,9 +138,11 @@ class EditorCommand(Shape):
             self.history.append([shape, task])
         if task == 'RemoveShape':
             canvas.shapes.remove([shape])
+            self.history.append([shape, task])
         if task == 'MoveShape':
             shape.old_coordinates = shape.coordinates
             shape.coordinates = args[0]
+            self.history.append([shape, task])
         if task == 'ChangeColor':
             shape.old_color = shape.color
             shape.color = args[0]
@@ -167,6 +169,7 @@ class ChangeColor(Shape):
         self.color = new_color
         self.old_color = None
 
+
     def execute(self, shape:Shape):
         """
         Метод для выполнения задачи
@@ -178,14 +181,45 @@ class ChangeColor(Shape):
             Сообщение о выполнении
         """
         self.old_color = shape.color
-        shape.color = self.new_color
+        shape.color = self.color
         print(f"Цвет изменён")
+
 
     def undo(self, shape:Shape):
         shape.color = self.old_color
-        print(f"Отменено") 
+        print(f"Отменено")
 
-   
+
+class MoveShape(Shape):
+    """Класс для опреации перемещения"""
+    
+    def __init__(self, new_coordinates: str):
+        """Инициализация"""
+        super().__init__()
+        self.coordinates = new_coordinates
+        self.old_coordinates = None
+
+
+    def execute(self, shape:Shape):
+        """
+        Метод для выполнения задачи
+        
+        Params:
+            shape (Shape): Экземпляр фигуры
+        
+        Return:
+            Сообщение о выполнении
+        """
+        self.old_coordinates = shape.coordinates
+        shape.coordinates = self.coordinates
+        print(f"Цвет изменён")
+
+
+    def undo(self, shape:Shape):
+        shape.coordinates = self.old_coordinates
+        print(f"Отменено")
+
+
 canvas = Canvas()
         
 circle = Circle([10, 10], 'green')
@@ -207,3 +241,7 @@ print(circle.coordinates)
 
 print(circle)
 edit.undo(circle)
+
+color = ChangeColor('black')
+color.execute(circle)
+print(circle.color)

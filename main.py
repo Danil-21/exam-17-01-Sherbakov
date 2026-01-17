@@ -11,7 +11,6 @@ class Shape(ABC):
         self.color = "white"
     
     
-    @abstractmethod
     def execute(self, shape, task, *args):
         """Абстрактный метод для выполнения задачи"""
         pass
@@ -26,12 +25,13 @@ class Canvas():
     """
     Класс для создания холста
     """
-    available_shapes = [
-        'Circle',
-        'Rectangle',
-        'Line'
-    ]
-    shapes = []
+    def __init__(self):
+        self.available_shapes = [
+            'Circle',
+            'Rectangle',
+            'Line'
+        ]
+        self.shapes = []
     
     
 shape_id = 0
@@ -57,35 +57,63 @@ class Circle(Shape):
         self.id = shape_id + 1
         shape_id += 1    
 
-    def execute(self, canvas: Canvas, shape: Shape, task, *args):
-        """
-        Метод для выполнения задачи
-        
-        Params:
-            canvas (Canvas): Экземпляр холста
-            shape (Shape): Экземпляр фигуры
-            task (Str): Задача, которую нужно выполнить
-            *args (Разные типы): Несколько параметров в зависимости от задачи
-        """
-        if task == 'AddShape':
-            canvas.shapes.append([shape])
-            self.history.append([shape, task])
-        if task == 'RemoveShape':
-            canvas.shapes.remove([shape])
-        if task == 'MoveShape':
-            shape.old_coordinates = shape.coordinates
-            shape.coordinates = args[0]
-        if task == 'ChangeColor':
-            shape.old_color = shape.color
-            shape.color = args[0]
-            self.history.append([shape, task])
-    
-    def info(self):
-        print(f'Круг: {self.coordinates}. Цвет: {self.color}')
     
     def __str__(self):
+        """Магический метод для вывода информации об объекте"""
         return f'Круг {self.color}'
+ 
+ 
+class Rectangle(Shape):
+    """Класс для объекта: Прямоугольник"""
     
+    def __init__(self, coordinates, color):
+        """
+        Метод для инициализации
+        
+        Params:
+            coordinates (List): Координаты фигуры
+            color (Str): Цвет фигуры
+        """
+        super().__init__()
+        self.coordinates = coordinates
+        self.old_coordinates = [0, 0]
+        self.color = color
+        self.old_color = None
+        global shape_id
+        self.id = shape_id + 1
+        shape_id += 1    
+
+    
+    def __str__(self):
+        """Магический метод для вывода информации об объекте"""
+        return f'Прямоугольник {self.color}'   
+
+
+class Line(Shape):
+    """Класс для объекта: Прямая"""
+    
+    def __init__(self, coordinates, color):
+        """
+        Метод для инициализации
+        
+        Params:
+            coordinates (List): Координаты фигуры
+            color (Str): Цвет фигуры
+        """
+        super().__init__()
+        self.coordinates = coordinates
+        self.old_coordinates = [0, 0]
+        self.color = color
+        self.old_color = None
+        global shape_id
+        self.id = shape_id + 1
+        shape_id += 1    
+
+    
+    def __str__(self):
+        """Магический метод для вывода информации об объекте"""
+        return f'Прямая {self.color}'
+
    
 class EditorCommand(Shape):
     """ Класс для обработки команд """
